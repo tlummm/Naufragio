@@ -1,0 +1,28 @@
+# Godot
+.godot/
+*.translation
+*.import
+export.cfg
+export_presets.cfg
+
+# Binários
+builds/
+*.exe
+*.x86_64
+*.apk
+*.aab
+*.ipa
+*.pck
+*.zip
+
+# Obsidian
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/plugins/**/data.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
