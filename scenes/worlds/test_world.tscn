@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bvox1tro2v4ck"]
+
+[ext_resource type="Script" uid="uid://b306ip4ne2mjp" path="res://scripts/gameplay/player_controller.gd" id="1_k3ref"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rm7gt"]
+size = Vector2(20, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k3ref"]
+size = Vector3(20, 0.1, 20)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wdhyl"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nvj10"]
+
+[node name="Node3D" type="Node3D" unique_id=1249414905]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=977181657]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=483090030]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=445009240]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1285024507]
+mesh = SubResource("PlaneMesh_rm7gt")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=767927195]
+shape = SubResource("BoxShape3D_k3ref")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=679153241]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("1_k3ref")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D" unique_id=1227524583]
+mesh = SubResource("CapsuleMesh_wdhyl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=207270706]
+shape = SubResource("CapsuleShape3D_nvj10")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" unique_id=1301569753]
