@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Sobre.md",
+                "file": "Instruções Claude.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Sobre"
+              "title": "Instruções Claude"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Sobre.md",
+                "file": "Introdução.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Links inversos para Sobre"
+              "title": "Links inversos para Introdução"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Sobre.md",
+                "file": "Introdução.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Links de saída para Sobre"
+              "title": "Links de saída para Introdução"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Sobre.md",
+                "file": "Introdução.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Sumário de Sobre"
+              "title": "Sumário de Introdução"
             }
           }
         ]
@@ -185,6 +185,9 @@
   },
   "active": "a93eed532c36df07",
   "lastOpenFiles": [
-    "Sobre.md"
+    "Introdução.md",
+    "Instruções Claude.md",
+    "Sem título.md",
+    "Narrativa.md"
   ]
 }
