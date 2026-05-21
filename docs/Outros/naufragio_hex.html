@@ -1,0 +1,180 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .container { padding: 1.5rem; background: #16161a; min-height: 100vh; font-family: sans-serif; }
+  .hex-section { display: flex; gap: 2.5rem; align-items: center; flex-wrap: wrap; }
+  .hex-wrap { flex: 0 0 260px; }
+  .controls { flex: 1; min-width: 180px; }
+  .attr-row { margin-bottom: 1.2rem; }
+  .attr-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .attr-name { font-size: 13px; font-weight: 500; }
+  .attr-pct { font-size: 11px; font-weight: 600; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,0.1); outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%; cursor: grab;
+  }
+  input[type=range]::-webkit-slider-thumb:active { cursor: grabbing; }
+  input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; border: none; cursor: grab; }
+  .page-title { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; letter-spacing: 0.03em; }
+</style>
+
+<div class="container">
+  <div class="page-title">Simulador de atributos — Naufrágio</div>
+  <div class="hex-section">
+    <div class="hex-wrap">
+      <canvas id="hexCanvas" width="260" height="260"></canvas>
+    </div>
+    <div class="controls" id="sliders"></div>
+  </div>
+</div>
+
+<script>
+const ATTRS = [
+  { id: 'agencia',   label: 'Agência',   color: '#AFA9EC', opp: 'essencia',  adjOwn: ['inocencia','ausencia'], adjOpp: ['ciencia','presenca'] },
+  { id: 'ausencia',  label: 'Ausência',  color: '#85B7EB', opp: 'presenca',  adjOwn: ['agencia','ciencia'],    adjOpp: ['inocencia','essencia'] },
+  { id: 'ciencia',   label: 'Ciência',   color: '#5DCAA5', opp: 'inocencia', adjOwn: ['ausencia','essencia'],  adjOpp: ['agencia','presenca'] },
+  { id: 'essencia',  label: 'Essência',  color: '#F0997B', opp: 'agencia',   adjOwn: ['ciencia','presenca'],   adjOpp: ['ausencia','inocencia'] },
+  { id: 'presenca',  label: 'Presença',  color: '#ED93B1', opp: 'ausencia',  adjOwn: ['essencia','inocencia'], adjOpp: ['ciencia','agencia'] },
+  { id: 'inocencia', label: 'Inocência', color: '#FAC775', opp: 'ciencia',   adjOwn: ['presenca','agencia'],   adjOpp: ['essencia','ausencia'] },
+];
+
+const BASE = 5, MAX_INVEST = 20, EFF_MAX = 35;
+let invested = {};
+ATTRS.forEach(a => invested[a.id] = 0);
+
+function getEffective(id) {
+  const a = ATTRS.find(x => x.id === id);
+  const oppPen    = Math.floor(invested[a.opp] / 2);
+  const adjOppPen = a.adjOpp.reduce((s, adj) => s + Math.floor(invested[adj] / 4), 0);
+  const adjBonus  = a.adjOwn.reduce((s, adj) => s + Math.floor(invested[adj] / 4), 0);
+  return Math.max(0, BASE + invested[id] - oppPen - adjOppPen + adjBonus);
+}
+
+function getAmpPct(id) {
+  return Math.min(100, Math.round((getEffective(id) / EFF_MAX) * 100));
+}
+
+function getDominantColor() {
+  const effs = ATTRS.map(a => getEffective(a.id));
+  const max = Math.max(...effs);
+  const winners = ATTRS.filter(a => getEffective(a.id) === max);
+  return winners.length === 1 ? winners[0].color : 'rgba(255,255,255,0.6)';
+}
+
+function buildSliders() {
+  const div = document.getElementById('sliders');
+  div.innerHTML = '';
+  ATTRS.forEach(a => {
+    const amp = getAmpPct(a.id);
+    const row = document.createElement('div');
+    row.className = 'attr-row';
+    row.innerHTML = `
+      <div class="attr-header">
+        <span class="attr-name" style="color:${a.color}">${a.label}</span>
+        <span class="attr-pct" style="color:${a.color}">${amp}%</span>
+      </div>`;
+
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.min = 0; input.max = MAX_INVEST; input.step = 1;
+    input.value = invested[a.id];
+    input.dataset.id = a.id;
+    input.style.background = `linear-gradient(to right, ${a.color} 0%, rgba(255,255,255,0.1) 0%)`;
+
+    const styleId = `thumb-style-${a.id}`;
+    if (!document.getElementById(styleId)) {
+      const s = document.createElement('style');
+      s.id = styleId;
+      s.textContent = `
+        input[data-id="${a.id}"]::-webkit-slider-thumb { background: ${a.color}; }
+        input[data-id="${a.id}"]::-moz-range-thumb { background: ${a.color}; border: none; }
+      `;
+      document.head.appendChild(s);
+    }
+
+    input.addEventListener('input', e => {
+      invested[e.target.dataset.id] = parseInt(e.target.value);
+      const p = (e.target.value / MAX_INVEST) * 100;
+      e.target.style.background = `linear-gradient(to right, ${a.color} ${p}%, rgba(255,255,255,0.1) ${p}%)`;
+      rebuildPcts(); drawHex();
+    });
+
+    row.appendChild(input);
+    div.appendChild(row);
+  });
+}
+
+function rebuildPcts() {
+  document.querySelectorAll('.attr-row').forEach((row, i) => {
+    row.querySelector('.attr-pct').textContent = `${getAmpPct(ATTRS[i].id)}%`;
+  });
+}
+
+function drawHex() {
+  const canvas = document.getElementById('hexCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 260, H = 260, cx = W/2, cy = H/2, R = 90;
+  ctx.clearRect(0,0,W,H);
+
+  const dominantColor = getDominantColor();
+
+  function pt(i, r) {
+    const angle = (Math.PI / 3) * i - Math.PI / 2;
+    return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
+  }
+
+  // Grid
+  for (let s = 1; s <= 5; s++) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const [x,y] = pt(i, R * s/5);
+      i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+  for (let i = 0; i < 6; i++) {
+    const [x,y] = pt(i, R);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+
+  // Shape com fill na cor dominante
+  ctx.beginPath();
+  ATTRS.forEach((a,i) => {
+    const frac = Math.min(getEffective(a.id) / EFF_MAX, 1);
+    const [x,y] = pt(i, R * frac);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+
+  // Fill com cor dominante bem transparente
+  const fillColor = dominantColor === 'rgba(255,255,255,0.6)'
+    ? 'rgba(255,255,255,0.07)'
+    : dominantColor + '22';
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+  ctx.strokeStyle = dominantColor;
+  ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Pontos coloridos
+  ATTRS.forEach((a,i) => {
+    const frac = Math.min(getEffective(a.id) / EFF_MAX, 1);
+    const [x,y] = pt(i, R * frac);
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle = a.color; ctx.fill();
+  });
+
+  // Centro
+  ctx.beginPath(); ctx.arc(cx,cy,4,0,Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.15)'; ctx.fill();
+}
+
+buildSliders();
+drawHex();
+</script>
