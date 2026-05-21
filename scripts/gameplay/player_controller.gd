@@ -10,7 +10,7 @@ var _target_position: Vector3
 var _is_moving: bool = false
 
 func _unhandled_input(event: InputEvent):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		# 1. Faz raycast da câmera até o chão
 		var camera = get_viewport().get_camera_3d()
 		var from = camera.project_ray_origin(event.position)

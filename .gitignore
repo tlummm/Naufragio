@@ -16,11 +16,7 @@ builds/
 *.zip
 
 # Obsidian
-.obsidian/workspace.json
-.obsidian/workspace-mobile.json
-.obsidian/workspace-mobile.json
-.obsidian/cache
-.obsidian/plugins/**/data.json
+.obsidian/
 
 # OS
 .DS_Store
