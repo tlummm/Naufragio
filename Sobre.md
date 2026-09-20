@@ -11,7 +11,7 @@ Indivíduos que conseguem burlar a limitação entre mundos são chamados de **N
 - **Invocado:** também conjurado, porém geralmente sob controle do Invocador — podendo existir condição ou contrato.
 - **Invasor:** veio de forma controlada e consciente. Normalmente mais forte que os Nativos e, na maioria das vezes, com planos de conquistar e subjugá-los.
 
-Navegadores podem ser jogadores, NPCs ou monstros — não necessariamente conscientes. Objetos e estruturas que sofrem Naufrágio ou outra forma de navegação são chamados de **Destroços**.
+**Navegadores** podem ser jogadores, NPCs ou monstros — não necessariamente conscientes. Objetos e estruturas que sofrem Naufrágio ou outra forma de navegação são chamados de **Destroços**.
 
 ### Mecânica central
 
